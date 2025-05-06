@@ -4,205 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo da Velha com WebSockets</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f0f0f0;
-        }
-        #board {
-            display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-gap: 5px;
-            margin: 20px auto;
-            width: 315px;
-        }
-        .cell {
-            width: 100px;
-            height: 100px;
-            background-color: white;
-            border: 2px solid #333;
-            font-size: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .cell.disabled {
-            cursor: not-allowed;
-            background-color: #e0e0e0;
-        }
-        .cell:hover:not(.disabled) {
-            background-color: #e0e0e0;
-        }
-        #status {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        #scoreboard {
-            font-size: 20px;
-            margin-bottom: 20px;
-            background-color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            display: inline-block;
-        }
-        #room-info {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        #room-selection {
-            margin: 20px;
-        }
-        #player-name, #room-input {
-            padding: 8px;
-            font-size: 16px;
-            margin: 5px;
-            border-radius: 5px;
-            border: 1px solid #333;
-            width: 200px;
-        }
-        #room-list {
-            padding: 8px;
-            font-size: 16px;
-            margin: 5px;
-            border-radius: 5px;
-            border: 1px solid #333;
-            width: 226px;
-        }
-        #refresh-rooms, #join-room, #create-room {
-            padding: 8px 16px;
-            font-size: 16px;
-            cursor: pointer;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            margin: 5px;
-        }
-        #refresh-rooms {
-            background-color: #FFC107;
-        }
-        #refresh-rooms:hover {
-            background-color: #FFA000;
-        }
-        #join-room {
-            background-color: #2196F3;
-        }
-        #join-room:hover {
-            background-color: #1976D2;
-        }
-        #create-room {
-            background-color: #4CAF50;
-        }
-        #create-room:hover {
-            background-color: #45a049;
-        }
-        #reset, #reset-scoreboard {
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            margin: 5px;
-        }
-        #reset {
-            background-color: #4CAF50;
-        }
-        #reset:hover {
-            background-color: #45a049;
-        }
-        #reset-scoreboard {
-            background-color: #ff4444;
-        }
-        #reset-scoreboard:hover {
-            background-color: #cc0000;
-        }
-        /* Estilos dos modais */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 400px;
-            width: 80%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .modal-content p {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        .modal-content button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            margin: 0 10px;
-        }
-        .modal-content button:focus {
-            outline: 2px solid #2196F3;
-            outline-offset: 2px;
-        }
-        .modal-confirm {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .modal-confirm:hover {
-            background-color: #45a049;
-        }
-        .modal-cancel {
-            background-color: #ff4444;
-            color: white;
-        }
-        .modal-cancel:hover {
-            background-color: #cc0000;
-        }
-        /* Estilos do modal de erro */
-        #error-modal .modal-content {
-            border: 2px solid #ff4444;
-        }
-        .modal-error {
-            background-color: #2196F3;
-            color: white;
-        }
-        .modal-error:hover {
-            background-color: #1976D2;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
+    <button id="theme-toggle" aria-label="Alternar para modo escuro">🌙 Escuro</button>
     <h1>Jogo da Velha</h1>
-    <div id="room-info">Digite seu nome e selecione uma sala ou crie uma nova</div>
+    <div style="display: none;" id="room-info">Digite seu nome e selecione uma sala, crie uma nova ou jogue contra o bot</div>
     <div id="room-selection">
         <input id="player-name" type="text" placeholder="Digite seu nome" maxlength="20">
         <br>
         <select id="room-list">
             <option value="">Nenhuma sala disponível</option>
         </select>
-        <button id="refresh-rooms">Atualizar Salas</button>
+        <button style="display: none;" id="refresh-rooms">Atualizar Salas</button>
         <br>
-        <input id="room-input" type="text" placeholder="Digite o ID da sala">
+        <input style="display: none;" id="room-input" type="text" placeholder="Digite o ID da sala">
         <button id="join-room">Entrar na Sala</button>
         <button id="create-room">Criar Nova Sala</button>
+        <button id="play-bot">Jogar contra Bot</button>
     </div>
     <div id="status">Aguardando conexão...</div>
-    <div id="scoreboard">Placar: Aguardando jogadores...</div>
+    <div style="display: none;" id="scoreboard">Placar: Aguardando jogadores...</div>
     <div id="board"></div>
     <button id="reset">Reiniciar Jogo</button>
     <button id="reset-scoreboard">Zerar Placar</button>
+    <button id="back-to-menu" aria-label="Voltar ao menu inicial">Voltar ao Menu</button>
 
     <!-- Modal de confirmação -->
     <div id="confirm-modal" class="modal">
@@ -235,22 +61,25 @@
         const refreshRoomsButton = document.getElementById("refresh-rooms");
         const joinRoomButton = document.getElementById("join-room");
         const createRoomButton = document.getElementById("create-room");
+        const playBotButton = document.getElementById("play-bot");
         const resetButton = document.getElementById("reset");
         const resetScoreboardButton = document.getElementById("reset-scoreboard");
+        const backToMenuButton = document.getElementById("back-to-menu");
         const confirmModal = document.getElementById("confirm-modal");
         const confirmButton = document.getElementById("modal-confirm");
         const cancelButton = document.getElementById("modal-cancel");
         const errorModal = document.getElementById("error-modal");
         const errorMessage = document.getElementById("error-message");
         const errorOkButton = document.getElementById("modal-error-ok");
+        const themeToggleButton = document.getElementById("theme-toggle");
 
-        let playerRole = null; // Papel do jogador (X ou O)
-        let roomId = null; // ID da sala atual
-        let canPlay = false; // Indica se o jogador pode fazer jogadas
-        let playerXName = null; // Nome do jogador X
-        let playerOName = null; // Nome do jogador O
+        let playerRole = null;
+        let roomId = null;
+        let canPlay = false;
+        let playerXName = null;
+        let playerOName = null;
+        let isBotGame = false;
 
-        // Mapeamento das teclas numéricas para posições do tabuleiro
         const keyToPosition = {
             "1": { row: 2, col: 0 },
             "2": { row: 2, col: 1 },
@@ -262,6 +91,36 @@
             "8": { row: 0, col: 1 },
             "9": { row: 0, col: 2 }
         };
+
+        function toggleTheme() {
+            const isDarkMode = document.body.classList.toggle("dark-mode");
+            localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+            themeToggleButton.textContent = isDarkMode ? "☀ Claro" : "🌙 Escuro";
+            themeToggleButton.setAttribute("aria-label", isDarkMode ? "Alternar para modo claro" : "Alternar para modo escuro");
+            console.log(`toggleTheme: Tema alterado para ${isDarkMode ? "escuro" : "claro"}`);
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme === "dark") {
+                document.body.classList.add("dark-mode");
+                themeToggleButton.textContent = "☀ Claro";
+                themeToggleButton.setAttribute("aria-label", "Alternar para modo claro");
+            } else {
+                document.body.classList.remove("dark-mode");
+                themeToggleButton.textContent = "🌙 Escuro";
+                themeToggleButton.setAttribute("aria-label", "Alternar para modo escuro");
+            }
+            console.log(`loadTheme: Tema carregado: ${savedTheme || "claro"}`);
+        }
+
+        themeToggleButton.addEventListener("click", toggleTheme);
+        themeToggleButton.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                toggleTheme();
+            }
+        });
 
         function createBoard() {
             boardDiv.innerHTML = "";
@@ -280,6 +139,34 @@
             updateBoardState();
         }
 
+        function showGameElements() {
+            boardDiv.style.display = "grid";
+            statusDiv.style.display = "block";
+            scoreboardDiv.style.display = "inline-block";
+            resetButton.style.display = "inline-block";
+            resetScoreboardButton.style.display = "inline-block";
+            backToMenuButton.style.display = "inline-block";
+            console.log("showGameElements: Exibindo tabuleiro, status, placar e botões");
+        }
+
+        function hideGameElements() {
+            boardDiv.style.display = "none";
+            statusDiv.style.display = "none";
+            scoreboardDiv.style.display = "none";
+            resetButton.style.display = "none";
+            resetScoreboardButton.style.display = "none";
+            backToMenuButton.style.display = "none";
+            roomSelectionDiv.style.display = "flex";
+            roomInfoDiv.textContent = "Digite seu nome e selecione uma sala, crie uma nova ou jogue contra o bot";
+            playerRole = null;
+            roomId = null;
+            canPlay = false;
+            playerXName = null;
+            playerOName = null;
+            isBotGame = false;
+            console.log("hideGameElements: Retornando ao menu inicial");
+        }
+
         function makeMove(row, col) {
             if (canPlay) {
                 socket.emit("make_move", { row, col, room_id: roomId });
@@ -287,18 +174,14 @@
         }
 
         function updateBoard(data) {
-            // Atualiza os nomes dos jogadores
             playerXName = data.player_x_name;
             playerOName = data.player_o_name;
-            
-            // Atualiza o tabuleiro com os dados do servidor
             for (let i = 0; i < 3; i++) {
                 for (let j = 0; j < 3; j++) {
                     const cell = document.querySelector(`[data-row="${i}"][data-col="${j}"]`);
                     cell.textContent = data.board[i][j];
                 }
             }
-            // Atualiza o status
             if (data.game_over) {
                 if (data.winner === "Draw") {
                     statusDiv.textContent = "Empate!";
@@ -310,7 +193,6 @@
                 const currentPlayerName = data.current_player === "X" ? playerXName : playerOName;
                 statusDiv.textContent = `Vez de ${currentPlayerName || 'jogador'}`;
             }
-            // Atualiza o placar
             if (playerXName && playerOName) {
                 scoreboardDiv.textContent = `Placar: ${playerXName}: ${data.scoreboard[playerXName] || 0} | ${playerOName}: ${data.scoreboard[playerOName] || 0} | Empates: ${data.scoreboard.Draw}`;
             } else if (playerXName) {
@@ -318,14 +200,13 @@
             } else {
                 scoreboardDiv.textContent = "Placar: Aguardando jogadores...";
             }
-            // Atualiza o estado do tabuleiro (habilitado/desabilitado)
             updateBoardState(data);
         }
 
         function updateBoardState(data = {}) {
             const cells = document.querySelectorAll(".cell");
             canPlay = playerRole && data.current_player === playerRole && !data.game_over && data.num_players === 2;
-            console.log(`updateBoardState: canPlay=${canPlay}, playerRole=${playerRole}, current_player=${data.current_player}, game_over=${data.game_over}, num_players=${data.num_players}`);
+            console.log(`updateBoardState: canPlay=${canPlay}, playerRole=${playerRole}, current_player=${data.current_player}, game_over=${data.game_over}, num_players=${data.num_players}, isBotGame=${isBotGame}`);
             cells.forEach(cell => {
                 cell.classList.toggle("disabled", !canPlay);
             });
@@ -351,7 +232,7 @@
 
         function showConfirmModal() {
             confirmModal.style.display = "flex";
-            confirmButton.focus(); // Define o foco no botão "Confirmar" ao abrir
+            confirmButton.focus();
         }
 
         function closeConfirmModal() {
@@ -361,11 +242,12 @@
         function showErrorModal(message) {
             errorMessage.textContent = message;
             errorModal.style.display = "flex";
-            errorOkButton.focus(); // Define o foco no botão "OK" ao abrir
+            errorOkButton.focus();
         }
 
         function closeErrorModal() {
             errorModal.style.display = "none";
+            hideGameElements();
         }
 
         function confirmResetScoreboard() {
@@ -378,7 +260,6 @@
             console.log(`reset_scoreboard: room_id=${roomId}`);
         }
 
-        // Manipulador para o botão Reiniciar Jogo
         resetButton.addEventListener("click", () => {
             if (!roomId) {
                 showErrorModal("Você precisa estar em uma sala para reiniciar o jogo.");
@@ -388,13 +269,26 @@
             console.log(`reset_game: room_id=${roomId}`);
         });
 
-        // Manipulador para o botão Zerar Placar
         resetScoreboardButton.addEventListener("click", showConfirmModal);
 
-        // Suporte ao teclado
+        backToMenuButton.addEventListener("click", () => {
+            if (!roomId) {
+                showErrorModal("Você precisa estar em uma sala para voltar ao menu.");
+                return;
+            }
+            socket.emit("leave_game", { room_id: roomId });
+            console.log(`leave_game: room_id=${roomId}`);
+        });
+
+        backToMenuButton.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                backToMenuButton.click();
+            }
+        });
+
         document.addEventListener("keydown", (event) => {
             if (confirmModal.style.display === "flex") {
-                // Modal de confirmação aberto
                 if (event.key === "Escape") {
                     closeConfirmModal();
                 } else if (event.key === "Enter") {
@@ -406,17 +300,14 @@
                     }
                 }
             } else if (errorModal.style.display === "flex") {
-                // Modal de erro aberto
                 if (event.key === "Escape" || event.key === "Enter") {
                     closeErrorModal();
                 }
             } else if (event.key === "Enter" && !roomId) {
-                // Pressionar Enter no campo de sala para entrar
                 if (document.activeElement === playerNameInput) {
                     joinRoomButton.click();
                 }
             } else {
-                // Modal fechado: lida com teclas numéricas para jogadas
                 if (keyToPosition[event.key] && canPlay) {
                     const { row, col } = keyToPosition[event.key];
                     makeMove(row, col);
@@ -429,18 +320,20 @@
             roomId = data.room_id;
             playerXName = data.player_x_name;
             playerOName = data.player_o_name;
-            roomInfoDiv.textContent = `Sala: ${roomId}`;
+            isBotGame = roomId.startsWith("bot_");
+            roomInfoDiv.textContent = isBotGame ? "Jogo contra Bot" : `Sala: ${roomId}`;
             statusDiv.textContent = data.message;
-            roomSelectionDiv.style.display = "none"; // Esconde a seleção de salas
-            console.log(`assign_role: role=${playerRole}, roomId=${roomId}, message=${data.message}, player_x_name=${playerXName}, player_o_name=${playerOName}`);
-            updateBoardState({ num_players: 1 }); // Inicialmente, apenas 1 jogador
+            roomSelectionDiv.style.display = "none";
+            showGameElements();
+            console.log(`assign_role: role=${playerRole}, roomId=${roomId}, message=${data.message}, player_x_name=${playerXName}, player_o_name=${playerOName}, isBotGame=${isBotGame}`);
+            updateBoardState({ num_players: isBotGame ? 2 : 1 });
         });
 
         socket.on("game_start", (data) => {
             playerXName = data.player_x_name;
             playerOName = data.player_o_name;
             statusDiv.textContent = data.message;
-            updateBoard(data); // Atualiza o tabuleiro com o estado completo
+            updateBoard(data);
             console.log(`game_start: message=${data.message}, num_players=${data.num_players}, player_x_name=${playerXName}, player_o_name=${playerOName}`);
         });
 
@@ -448,8 +341,18 @@
             playerXName = data.player_x_name;
             playerOName = data.player_o_name;
             statusDiv.textContent = data.message;
-            updateBoardState({ num_players: 1 }); // Apenas 1 jogador resta
-            console.log(`player_left: message=${data.message}, player_x_name=${playerXName}, player_o_name=${playerOName}`);
+            if (data.force_menu) {
+                showErrorModal(data.message);
+            } else {
+                updateBoardState({ num_players: 1 });
+            }
+            console.log(`player_left: message=${data.message}, player_x_name=${playerXName}, player_o_name=${playerOName}, force_menu=${data.force_menu}`);
+        });
+
+        socket.on("leave_game_success", (data) => {
+            console.log(`leave_game_success: message=${data.message}`);
+            hideGameElements();
+            socket.emit("get_rooms");
         });
 
         socket.on("update", (data) => {
@@ -489,6 +392,16 @@
             console.log(`create_room: Solicitando nova sala, create_new=true, player_name=${player_name}`);
         });
 
+        playBotButton.addEventListener("click", () => {
+            const player_name = playerNameInput.value.trim();
+            if (!player_name) {
+                showErrorModal("Por favor, digite seu nome.");
+                return;
+            }
+            socket.emit("start_bot_game", { player_name: player_name });
+            console.log(`start_bot_game: Iniciando jogo contra bot, player_name=${player_name}`);
+        });
+
         refreshRoomsButton.addEventListener("click", () => {
             socket.emit("get_rooms");
             console.log("refresh_rooms: Solicitando lista de salas");
@@ -498,7 +411,7 @@
         cancelButton.addEventListener("click", closeConfirmModal);
         errorOkButton.addEventListener("click", closeErrorModal);
 
-        // Solicita a lista de salas ao carregar a página
+        loadTheme();
         socket.emit("get_rooms");
         createBoard();
     </script>

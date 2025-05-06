@@ -1,0 +1,345 @@
+:root {
+    --background-color: #f0f0f0;
+    --text-color: #333;
+    --cell-background: #fff;
+    --cell-border: #333;
+    --scoreboard-background: #fff;
+    --modal-background: #fff;
+    --modal-text: #333;
+    --modal-border: #ff4444;
+    --button-refresh: #FFC107;
+    --button-refresh-hover: #FFA000;
+    --button-join: #2196F3;
+    --button-join-hover: #1976D2;
+    --button-create: #4CAF50;
+    --button-create-hover: #45a049;
+    --button-bot: #9C27B0;
+    --button-bot-hover: #7B1FA2;
+    --button-reset: #4CAF50;
+    --button-reset-hover: #45a049;
+    --button-reset-scoreboard: #ff4444;
+    --button-reset-scoreboard-hover: #cc0000;
+    --button-back-menu: #F57C00;
+    --button-back-menu-hover: #EF6C00;
+    --button-modal-confirm: #4CAF50;
+    --button-modal-confirm-hover: #45a049;
+    --button-modal-cancel: #ff4444;
+    --button-modal-cancel-hover: #cc0000;
+    --button-modal-error: #2196F3;
+    --button-modal-error-hover: #1976D2;
+    --theme-toggle-background: #666;
+    --theme-toggle-text: #fff;
+    --theme-toggle-hover: #555;
+}
+
+.dark-mode {
+    --background-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --cell-background: #333;
+    --cell-border: #e0e0e0;
+    --scoreboard-background: #2a2a2a;
+    --modal-background: #2a2a2a;
+    --modal-text: #e0e0e0;
+    --modal-border: #ff6666;
+    --button-refresh: #FFD54F;
+    --button-refresh-hover: #FFCA28;
+    --button-join: #42A5F5;
+    --button-join-hover: #1E88E5;
+    --button-create: #66BB6A;
+    --button-create-hover: #4CAF50;
+    --button-bot: #AB47BC;
+    --button-bot-hover: #8E24AA;
+    --button-reset: #66BB6A;
+    --button-reset-hover: #4CAF50;
+    --button-reset-scoreboard: #ef5350;
+    --button-reset-scoreboard-hover: #e53935;
+    --button-back-menu: #FF9800;
+    --button-back-menu-hover: #FB8C00;
+    --button-modal-confirm: #66BB6A;
+    --button-modal-confirm-hover: #4CAF50;
+    --button-modal-cancel: #ef5350;
+    --button-modal-cancel-hover: #e53935;
+    --button-modal-error: #42A5F5;
+    --button-modal-error-hover: #1E88E5;
+    --theme-toggle-background: #888;
+    --theme-toggle-text: #000;
+    --theme-toggle-hover: #999;
+}
+
+.dark-mode .cell.disabled {
+    background-color: #1a1a1a;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+#theme-toggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: var(--theme-toggle-background);
+    color: var(--theme-toggle-text);
+    border: none;
+    border-radius: 5px;
+    z-index: 1000;
+    transition: background-color 0.3s;
+}
+
+#theme-toggle:hover {
+    background-color: var(--theme-toggle-hover);
+}
+
+#theme-toggle:focus {
+    outline: 2px solid var(--button-join);
+    outline-offset: 2px;
+}
+
+#board {
+    display: none;
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 5px;
+    margin: 20px auto;
+    width: 315px;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    background-color: var(--cell-background);
+    border: 2px solid var(--cell-border);
+    font-size: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.cell.disabled {
+    cursor: not-allowed;
+    background-color: #e0e0e0;
+
+}
+
+.cell:hover:not(.disabled) {
+    background-color: #e0e0e0;
+}
+
+#status {
+    display: none;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+#scoreboard {
+    display: none;
+    font-size: 20px;
+    margin-bottom: 20px;
+    background-color: var(--scoreboard-background);
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+#room-info {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+#room-selection {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+}
+
+#player-name,
+#room-input {
+    padding: 8px;
+    font-size: 16px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid var(--cell-border);
+    width: 200px;
+    background-color: var(--cell-background);
+    color: var(--text-color);
+}
+
+#room-list {
+    padding: 8px;
+    font-size: 16px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid var(--cell-border);
+    width: 226px;
+    background-color: var(--cell-background);
+    color: var(--text-color);
+}
+
+#refresh-rooms,
+#join-room,
+#create-room,
+#play-bot {
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+    transition: background-color 0.3s;
+}
+
+#refresh-rooms {
+    background-color: var(--button-refresh);
+}
+
+#refresh-rooms:hover {
+    background-color: var(--button-refresh-hover);
+}
+
+#join-room {
+    background-color: var(--button-join);
+}
+
+#join-room:hover {
+    background-color: var(--button-join-hover);
+}
+
+#create-room {
+    background-color: var(--button-create);
+}
+
+#create-room:hover {
+    background-color: var(--button-create-hover);
+}
+
+#play-bot {
+    background-color: var(--button-bot);
+}
+
+#play-bot:hover {
+    background-color: var(--button-bot-hover);
+}
+
+#reset,
+#reset-scoreboard,
+#back-to-menu {
+    display: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+    transition: background-color 0.3s;
+}
+
+#reset {
+    background-color: var(--button-reset);
+}
+
+#reset:hover {
+    background-color: var(--button-reset-hover);
+}
+
+#reset-scoreboard {
+    background-color: var(--button-reset-scoreboard);
+}
+
+#reset-scoreboard:hover {
+    background-color: var(--button-reset-scoreboard-hover);
+}
+
+#back-to-menu {
+    background-color: var(--button-back-menu);
+}
+
+#back-to-menu:hover {
+    background-color: var(--button-back-menu-hover);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--modal-background);
+    color: var(--modal-text);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    width: 80%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    margin: 0 10px;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.modal-content button:focus {
+    outline: 2px solid var(--button-join);
+    outline-offset: 2px;
+}
+
+.modal-confirm {
+    background-color: var(--button-modal-confirm);
+}
+
+.modal-confirm:hover {
+    background-color: var(--button-modal-confirm-hover);
+}
+
+.modal-cancel {
+    background-color: var(--button-modal-cancel);
+}
+
+.modal-cancel:hover {
+    background-color: var(--button-modal-cancel-hover);
+}
+
+#error-modal .modal-content {
+    border: 2px solid var(--modal-border);
+}
+
+.modal-error {
+    background-color: var(--button-modal-error);
+}
+
+.modal-error:hover {
+    background-color: var(--button-modal-error-hover);
+}
